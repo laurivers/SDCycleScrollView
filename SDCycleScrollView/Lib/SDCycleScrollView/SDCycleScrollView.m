@@ -522,10 +522,18 @@ NSString * const ID = @"SDCycleScrollViewCell";
         [pageControl sizeToFit];
     }
     
-    CGRect pageControlFrame = CGRectMake(x, y, size.width, size.height);
-    pageControlFrame.origin.y -= self.pageControlBottomOffset;
-    pageControlFrame.origin.x -= self.pageControlRightOffset;
-    self.pageControl.frame = pageControlFrame;
+    if (@available(iOS 14.0, *)) {
+        self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
+        [[self.pageControl.centerXAnchor constraintEqualToAnchor:self.centerXAnchor] setActive:YES];
+        [[self.pageControl.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-10] setActive:YES];
+        [[self.pageControl.heightAnchor constraintEqualToConstant:self.pageControlDotSize.height] setActive:YES];
+    } else {
+        CGRect pageControlFrame = CGRectMake(x, y, size.width, size.height);
+        pageControlFrame.origin.y -= self.pageControlBottomOffset;
+        pageControlFrame.origin.x -= self.pageControlRightOffset;
+        self.pageControl.frame = pageControlFrame;
+    }
+
     self.pageControl.hidden = !_showPageControl;
     
     if (self.backgroundImageView) {
